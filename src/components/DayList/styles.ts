@@ -1,24 +1,21 @@
 import styled, { css } from "styled-components/native";
 
+export type CardStatusStyleProps = "GOOD" | "BAD" | String;
+
+type Props = {
+  healthier: CardStatusStyleProps;
+};
+
 export const Container = styled.View`
   width: 100%;
-  margin-top: 33px;
+  //margin-top: 33px;
   justify-content: flex-start;
-`;
-
-export const DateTitle = styled.Text`
-  padding-left: 10px;
-  ${({ theme }) => css`
-    font-family: ${theme.FONT_FAMILY.BOLD};
-    font-size: ${theme.FONT_SIZE.SM}px;
-    color: ${theme.COLORS.GRAY_100};
-  `}
 `;
 
 export const Card = styled.View`
   width: 100%;
   height: 49px;
-  margin-top: 13px;
+  margin-top: 10px;
 
   flex-direction: row;
   align-items: center;
@@ -59,13 +56,12 @@ export const CardDescription = styled.Text`
   `}
 `;
 
-export const CardStatus = styled.View`
+export const CardStatus = styled.View<Props>`
   margin-right: 13px;
   border-radius: 15px;
   width: 14px;
   height: 14px;
 
-  ${({ theme }) => css`
-    background: ${theme.COLORS.RED_LIGHT};
-  `}
+  background-color: ${({ theme, healthier }) =>
+    healthier === "GOOD" ? theme.COLORS.GREEN_LIGHT : theme.COLORS.RED_LIGHT};
 `;

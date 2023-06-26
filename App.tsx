@@ -11,6 +11,8 @@ import theme from "./src/theme";
 import { LoadIndicator } from "@components/Loading/styles";
 import { Home } from "@screens/Home";
 
+import { Routes } from "./src/routes";
+
 export default function App() {
   const [fontsLoaded] = useFonts({ Nunito_400Regular, Nunito_700Bold });
 
@@ -22,7 +24,7 @@ export default function App() {
           backgroundColor="transparent"
           translucent
         />
-        {fontsLoaded ? <Home /> : <LoadIndicator />}
+        {fontsLoaded ? <Routes /> : <LoadIndicator />}
       </>
     </ThemeProvider>
   );
