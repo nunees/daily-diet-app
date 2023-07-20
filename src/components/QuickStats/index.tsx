@@ -7,16 +7,20 @@ import {
   UpArrowIcon,
   IconContainer,
 } from "./styles";
+import { Highlight } from "@components/Highlight";
 
-export function Percent() {
+type Props = {
+  onClick: () => void;
+};
+
+export function QuickStats({ onClick }: Props) {
   return (
-    <Container>
+    <Container onPress={onClick}>
       <PercentDetails>
         <IconContainer>
           <UpArrowIcon />
         </IconContainer>
-        <PercentCounter>90,86%</PercentCounter>
-        <PercentText>das refeições dentro da dieta</PercentText>
+        <Highlight />
       </PercentDetails>
     </Container>
   );

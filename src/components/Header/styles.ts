@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export const Container = styled(SafeAreaView)`
   width: 100%;
-  margin-top: 33px;
+  margin-top: 0px;
   margin-bottom: 33px;
   flex-direction: row;
   align-items: flex-start;

@@ -6,8 +6,8 @@ const { Navigator, Screen } = createStackNavigator();
 
 export function AppRoutes() {
   return (
-    <Navigator screenOptions={{ headerShown: false }}>
-      {/* <Screen name="home" component={Home} /> */}
+    <Navigator screenOptions={{ headerShown: false, animationEnabled: false }}>
+      <Screen name="home" component={Home} />
       <Screen name="stats" component={Stats} />
     </Navigator>
   );
