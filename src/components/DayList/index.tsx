@@ -9,6 +9,7 @@ import {
   Container,
   Divider,
 } from "./styles";
+import { NoItems } from "@components/NoItems";
 
 type Props = {
   hour: String;
@@ -17,7 +18,9 @@ type Props = {
 };
 
 export function DayList() {
-  const foods = [
+  const foods: [] = [];
+
+  const foodss = [
     {
       date: "24.06.2023",
       data: [
@@ -46,6 +49,7 @@ export function DayList() {
     <>
       <Container>
         <SectionList
+          ListEmptyComponent={() => <NoItems />}
           renderSectionHeader={({ section: { date } }) => (
             <DateTitle date={date} />
           )}

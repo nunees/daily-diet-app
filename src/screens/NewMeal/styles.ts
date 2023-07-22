@@ -8,19 +8,20 @@ export const Container = styled.View`
   ${({ theme }) => css`
     flex: 1;
     width: 100%;
+    align-self: center;
     flex-direction: column;
     background-color: ${theme.COLORS.GRAY_500};
   `}
 `;
 
 export const Header = styled.View`
-  height: 75px;
+  height: 15px;
   flex-direction: row;
   padding-top: 33px;
 `;
 
 export const Content = styled.View`
-  flex: 1;
+  flex: 8;
   width: 100%;
 
   padding-left: 25px;

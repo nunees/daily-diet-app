@@ -15,7 +15,7 @@ export const Container = styled.View`
 
 export const Header = styled.View<BackHeaderProps>`
   ${({ theme, color }) => css`
-    height: 75px;
+    height: 100px;
     flex-direction: row;
     padding-top: 33px;
     background-color: ${color === "GREEN"

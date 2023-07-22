@@ -17,5 +17,6 @@ export const TextInput = styled.TextInput<TextInputProps>`
     color: ${theme.COLORS.GRAY_100};
     border: 1px solid ${theme.COLORS.GRAY_500};
     border-radius: 8px;
+    padding-left: 10px;
   `};
 `;

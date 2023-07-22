@@ -10,9 +10,10 @@ export type ButtonProps = {
 
 export const Container = styled(TouchableOpacity)<ButtonProps>`
   ${({ theme, btnColor, btnHeight, btnWidth }) => css`
+    align-self: center;
     flex-direction: row;
-    width: ${btnWidth ? btnWidth : 0}px;
-    height: ${btnHeight ? btnHeight : 0}px;
+    width: ${btnWidth || 100}px;
+    height: ${btnHeight || 100}px;
     border-radius: 6px;
 
     justify-content: center;
