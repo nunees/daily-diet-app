@@ -3,15 +3,17 @@ import { TouchableOpacity } from "react-native";
 import { ArrowUpRight } from "phosphor-react-native";
 
 export const Container = styled(TouchableOpacity)`
-  width: 100%;
+  width: 327px;
+  height: 102px;
   flex-direction: row;
+  align-self: center;
   align-items: center;
   justify-content: center;
   margin-bottom: 33px;
 `;
 
 export const PercentDetails = styled.View`
-  width: 327px;
+  width: 100%;
   height: 102px;
 
   align-items: center;

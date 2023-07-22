@@ -8,11 +8,10 @@ type Props = {
 
 export const Container = styled.View`
   width: 100%;
-  //margin-top: 33px;
   justify-content: flex-start;
 `;
 
-export const Card = styled.View`
+export const Card = styled.TouchableOpacity`
   width: 100%;
   height: 49px;
   margin-top: 10px;
@@ -40,7 +39,7 @@ export const CardHour = styled.Text`
 
 export const Divider = styled.View`
   margin-right: 13px;
-  width: 0px;
+  width: 1px;
   height: 14px;
   ${({ theme }) => css`
     border: 1px solid ${theme.COLORS.GRAY_400};

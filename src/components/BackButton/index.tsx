@@ -1,12 +1,11 @@
+import { useNavigation } from "@react-navigation/native";
 import { BackArrowIcon, Container } from "./styles";
 
-type Props = {
-  onPress: () => void;
-};
+export function BackButton() {
+  const navigation = useNavigation();
 
-export function BackButton({ onPress }: Props) {
   return (
-    <Container onPress={onPress}>
+    <Container onPress={() => navigation.navigate("home")}>
       <BackArrowIcon />
     </Container>
   );

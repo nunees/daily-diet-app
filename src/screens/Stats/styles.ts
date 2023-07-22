@@ -10,8 +10,8 @@ export const Container = styled.View<Props>`
     width: 100%;
     flex-direction: column;
     background-color: ${health === "GOOD"
-      ? theme.COLORS.GREEN_MID
-      : theme.COLORS.RED_MID};
+      ? theme.COLORS.GREEN_LIGHT
+      : theme.COLORS.RED_LIGHT};
   `}
 `;
 

@@ -1,9 +1,9 @@
 import styled from "styled-components/native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { View } from "react-native";
 
-export const Container = styled(SafeAreaView)`
+export const Container = styled.View`
   width: 100%;
-  margin-top: 0px;
   margin-bottom: 33px;
   flex-direction: row;
   align-items: flex-start;

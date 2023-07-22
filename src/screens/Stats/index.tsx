@@ -16,7 +16,7 @@ export function Stats() {
   return (
     <Container health="GOOD">
       <Header>
-        <BackButton onPress={handleGoBack} />
+        <BackButton />
         <Highlight />
       </Header>
       <Content>
