@@ -23,7 +23,6 @@ export function Button({
   btnHeight,
   onPress,
 }: Props) {
-  console.log(btnWidth);
   return (
     <Container
       onPress={onPress}

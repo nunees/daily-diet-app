@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components/native";
 
 export type BackHeaderProps = {
-  color: "GREEN" | "RED";
+  color: "GREEN" | "RED" | "GREY";
 };
 
 export const Container = styled.View`
@@ -21,6 +21,9 @@ export const Header = styled.View<BackHeaderProps>`
     background-color: ${color === "GREEN"
       ? theme.COLORS.GREEN_LIGHT
       : theme.COLORS.RED_LIGHT};
+    background-color: ${color === "GREY"
+      ? theme.COLORS.GRAY_500
+      : "transparent"};
   `};
 `;
 

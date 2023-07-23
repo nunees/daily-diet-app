@@ -10,60 +10,69 @@ import {
   Divider,
 } from "./styles";
 import { NoItems } from "@components/NoItems";
+import { useCallback, useEffect, useState } from "react";
+import { mealsGetAll } from "@storage/meal/mealsGetAll";
+import { useFocusEffect } from "@react-navigation/native";
 
-type Props = {
-  hour: String;
-  text: String;
-  type?: CardStatusStyleProps;
-};
+import { MealCreateProps } from "@storage/meal/mealCreate";
+import { Loading } from "@components/Loading";
+import { getMealsByDate } from "@storage/meal/getMealsByDate";
+
+export interface IMealsHistory {
+  date: string;
+  data: MealCreateProps[];
+}
 
 export function DayList() {
-  const foods: [] = [];
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [meals, setMeals] = useState<IMealsHistory[]>([]);
 
-  const foodss = [
-    {
-      date: "24.06.2023",
-      data: [
-        {
-          id: "1",
-          hour: "21:30",
-          content: "X-Salada",
-          healthier: "BAD",
-        },
-        {
-          id: "2",
-          hour: "22:30",
-          content: "Whey Protein",
-          healthier: "GOOD",
-        },
-        {
-          id: "3",
-          hour: "23:30",
-          content: "Mingau de aveia",
-          healthier: "BAD" as CardStatusStyleProps,
-        },
-      ],
-    },
-  ];
+  async function fetchMeals() {
+    try {
+      setIsLoading(true);
+
+      const data = await mealsGetAll();
+      const mealsByDate = getMealsByDate(data);
+
+      console.log(mealsByDate);
+
+      setMeals(mealsByDate.sort().reverse());
+
+      setIsLoading(false);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchMeals();
+    }, [])
+  );
+
   return (
     <>
       <Container>
-        <SectionList
-          ListEmptyComponent={() => <NoItems />}
-          renderSectionHeader={({ section: { date } }) => (
-            <DateTitle date={date} />
-          )}
-          sections={foods}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <Card>
-              <CardHour>{item.hour}</CardHour>
-              <Divider />
-              <CardDescription>{item.content}</CardDescription>
-              <CardStatus healthier={item.healthier} />
-            </Card>
-          )}
-        ></SectionList>
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <SectionList
+            sections={meals}
+            ListEmptyComponent={() => <NoItems />}
+            renderSectionHeader={({ section: { date } }) => (
+              <DateTitle date={date} />
+            )}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <Card onPress={() => console.log(item)}>
+                <CardHour>{item.hours}</CardHour>
+                <Divider />
+                <CardDescription>{item.name}</CardDescription>
+                <CardStatus healthier={item.isDiet ? "GOOD" : "BAD"} />
+              </Card>
+            )}
+          ></SectionList>
+        )}
       </Container>
     </>
   );

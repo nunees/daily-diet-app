@@ -2,47 +2,103 @@ import { Button } from "@components/Button";
 import {
   Container,
   Content,
-  Header,
   StatusBox,
   StatusLight,
   StatusText,
-  Title,
 } from "./styles";
 import { Input } from "@components/Input";
 import { InputLabel } from "@components/InputLabel";
 import { useNavigation } from "@react-navigation/native";
-import { View } from "react-native";
+import { Alert, View } from "react-native";
 import { BackHeader } from "@components/BackHeader";
 import React, { useState } from "react";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
+import theme from "@theme/index";
+import uuid from "react-native-uuid";
+import { MealCreateProps, mealCreate } from "@storage/meal/mealCreate";
 
 export function NewMeal() {
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [date, setDate] = useState<string>("");
-  const [hour, setHour] = useState<string>("");
-  const [isDiet, setIsDiet] = useState<boolean>(false);
+  const [hours, setHours] = useState<string>("");
+  const [isDiet, setIsDiet] = useState<boolean>(true);
+
+  const [btnYes, setBtnYes] = useState<boolean>(true);
+  const [btnNo, setBtnNo] = useState<boolean>(false);
 
   const navigation = useNavigation();
 
-  function handleGoBack() {
-    navigation.goBack();
+  function handleHours(hour: Date) {
+    const hours = hour
+      .toLocaleTimeString("pt-BR", {
+        hour: "2-digit",
+        minute: "2-digit",
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      })
+      .split(" ")[1];
+    setHours(hours);
   }
 
-  async function handleSubmition() {}
+  function handleDate(date: Date): void {
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    setDate(`${day}/${month}/${year}`);
+  }
+
+  function handleToggleButton() {
+    setBtnNo((current) => !current);
+    setBtnYes((current) => !current);
+  }
+
+  async function handleNewMeal() {
+    try {
+      if (name === "" || description === "" || date === "" || hours === "") {
+        return Alert.alert("Nova refeição", "Preencha todos os campos");
+      }
+
+      const id = String(uuid.v4());
+
+      const meal: MealCreateProps = {
+        date,
+        id,
+        name,
+        description,
+        hours,
+        isDiet,
+      };
+
+      console.log("Add new meal", meal);
+
+      await mealCreate(meal);
+      navigation.navigate("result", { isDiet });
+    } catch (error) {
+      Alert.alert("Nova refeição", "Nao foi possível realizar o cadastro");
+      console.log(error);
+    }
+  }
 
   return (
     <Container>
-      <BackHeader title={"Nova refeição"} color="GREEN" />
+      <BackHeader title={"Nova refeição"} color="GREY" />
       <Content>
         <InputLabel label={"Nome"} />
-        <Input width={"327"} height={"48"} onChangeText={() => setName} />
+        <Input
+          width={"327"}
+          height={"48"}
+          defaultValue={name}
+          onChangeText={(text) => setName(text)}
+        />
         <InputLabel label={"Descrição"} />
         <Input
           multiline
           width={"327"}
           height={"120"}
-          onChangeText={() => setDescription}
+          defaultValue={description}
+          onChangeText={(text) => setDescription(text)}
         />
 
         <View style={{ flexDirection: "row" }}>
@@ -71,11 +127,7 @@ export function NewMeal() {
                 mode: "date",
                 value: new Date(),
                 is24Hour: true,
-                onChange: (event, d) => {
-                  const userDate = d?.toLocaleDateString("pt-BR");
-                  setDate(userDate as string);
-                  console.log("Date: " + date);
-                },
+                onChange: (event, date) => handleDate(date as Date),
               });
             }}
           />
@@ -83,7 +135,7 @@ export function NewMeal() {
             keyboardType="numeric"
             width={"153"}
             height={"48"}
-            defaultValue={hour}
+            defaultValue={hours}
             onChangeText={() => console.log("oi")}
             onPress={() => {
               DateTimePickerAndroid.open({
@@ -91,13 +143,7 @@ export function NewMeal() {
                 mode: "time",
                 value: new Date(),
                 is24Hour: true,
-                onChange: (event, date) => {
-                  const userHours = date?.getHours();
-                  const userMinutes = date?.getMinutes();
-                  const newHour = userHours + ":" + userMinutes;
-                  setHour(newHour);
-                  console.log("Hour: " + hour);
-                },
+                onChange: (event, date) => handleHours(date as Date),
               });
             }}
           />
@@ -106,12 +152,46 @@ export function NewMeal() {
         <InputLabel label={"Está dentro da dieta?"} />
 
         <View style={{ flexDirection: "row" }}>
-          <StatusBox>
+          <StatusBox
+            onPress={() => {
+              handleToggleButton();
+              setIsDiet(true);
+            }}
+            style={
+              btnYes && !btnNo
+                ? {
+                    borderWidth: 1,
+                    borderColor: theme.COLORS.GREEN_DARK,
+                    backgroundColor: theme.COLORS.GREEN_LIGHT,
+                  }
+                : {
+                    borderWidth: 0,
+                    borderColor: theme.COLORS.GRAY_100,
+                  }
+            }
+          >
             <StatusLight light="GREEN" />
             <StatusText>Sim</StatusText>
           </StatusBox>
 
-          <StatusBox>
+          <StatusBox
+            onPress={() => {
+              handleToggleButton();
+              setIsDiet(false);
+            }}
+            style={
+              btnNo && !btnYes
+                ? {
+                    borderWidth: 1,
+                    borderColor: theme.COLORS.RED_DARK,
+                    backgroundColor: theme.COLORS.RED_LIGHT,
+                  }
+                : {
+                    borderWidth: 0,
+                    borderColor: theme.COLORS.GRAY_100,
+                  }
+            }
+          >
             <StatusLight light="RED" />
             <StatusText>Não</StatusText>
           </StatusBox>
@@ -122,7 +202,7 @@ export function NewMeal() {
             btnColor="BLACK"
             icon="EDIT"
             title="Cadastrar Refeição"
-            onPress={() => navigation.navigate("result", meal)}
+            onPress={() => handleNewMeal()}
             haveIcon={false}
             btnWidth={327}
             btnHeight={48}

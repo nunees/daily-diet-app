@@ -5,7 +5,7 @@ type Props = {
   height?: string;
   multiline?: boolean;
   keyboardType?: "numeric" | "phone-pad" | "default" | undefined;
-  onChangeText?: (e?: string) => void;
+  onChangeText?: (text: string) => void;
   defaultValue?: string;
   onPress?: () => void;
   editable?: boolean;
@@ -20,6 +20,7 @@ export function Input({
   defaultValue,
   onPress,
   editable,
+  ...rest
 }: Props) {
   return (
     <Container>
@@ -32,6 +33,7 @@ export function Input({
         multiline={multiline}
         width={width}
         height={height}
+        {...rest}
       />
     </Container>
   );

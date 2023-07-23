@@ -5,5 +5,7 @@ export async function mealsGetAll() {
   try {
     const storage = await AsyncStorage.getItem(MEAL_COLLECTION);
     return storage ? JSON.parse(storage) : [];
-  } catch (error) {}
+  } catch (error) {
+    throw error;
+  }
 }

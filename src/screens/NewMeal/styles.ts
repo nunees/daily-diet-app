@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components/native";
 
 type StyleLightProps = {
-  light: "GREEN" | "RED" | "YELLOW";
+  light?: "GREEN" | "RED" | "YELLOW";
 };
 
 export const Container = styled.View`
@@ -41,16 +41,18 @@ export const Title = styled.Text`
   `};
 `;
 
-export const StatusBox = styled.View`
-  width: 160px;
-  height: 50px;
-  margin-top: 5px;
-  margin-right: 20px;
-  border-radius: 8px;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  background-color: ${({ theme }) => theme.COLORS.GRAY_600};
+export const StatusBox = styled.TouchableOpacity<StyleLightProps>`
+  ${({ theme, light }) => css`
+    width: 160px;
+    height: 50px;
+    margin-top: 5px;
+    margin-right: 20px;
+    border-radius: 8px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: ${({ theme }) => theme.COLORS.GRAY_600};
+  `};
 `;
 
 export const StatusLight = styled.View<StyleLightProps>`

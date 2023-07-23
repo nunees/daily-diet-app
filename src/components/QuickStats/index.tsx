@@ -11,16 +11,18 @@ import { Highlight } from "@components/Highlight";
 
 type Props = {
   onClick: () => void;
+  color: "RED" | "GREEN";
+  percent: number;
 };
 
-export function QuickStats({ onClick }: Props) {
+export function QuickStats({ onClick, color, percent }: Props) {
   return (
     <Container onPress={onClick}>
-      <PercentDetails>
+      <PercentDetails color={color}>
         <IconContainer>
-          <UpArrowIcon />
+          <UpArrowIcon color={color} />
         </IconContainer>
-        <Highlight />
+        <Highlight percent={percent} />
       </PercentDetails>
     </Container>
   );

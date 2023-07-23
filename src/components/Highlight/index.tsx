@@ -1,9 +1,15 @@
 import { Container, PercentCounter, PercentText } from "./styles";
 
-export function Highlight() {
+type Props = {
+  percent: number;
+};
+
+export function Highlight({ percent }: Props) {
   return (
     <Container>
-      <PercentCounter>90,86%</PercentCounter>
+      <PercentCounter>
+        {percent.toFixed(2).replace(".", ",") + "%"}
+      </PercentCounter>
       <PercentText>das refeições dentro da dieta</PercentText>
     </Container>
   );
