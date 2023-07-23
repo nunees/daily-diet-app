@@ -4,11 +4,12 @@ import { useNavigation } from "@react-navigation/native";
 
 type Props = BackHeaderProps & {
   title: string;
+  isToggledModal?: boolean;
 };
 
-export function BackHeader({ color, title }: Props) {
+export function BackHeader({ color, title, isToggledModal }: Props) {
   return (
-    <Container>
+    <Container isToggledModal={isToggledModal} color={color}>
       <Header color={color}>
         <BackButton />
         <Title>{title}</Title>

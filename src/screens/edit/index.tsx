@@ -1,4 +1,4 @@
-import { Button } from "@components/Button";
+import { View } from "react-native";
 import {
   Container,
   Content,
@@ -6,28 +6,58 @@ import {
   StatusLight,
   StatusText,
 } from "./styles";
-import { Input } from "@components/Input";
-import { InputLabel } from "@components/InputLabel";
-import { useNavigation } from "@react-navigation/native";
-import { Alert, View } from "react-native";
 import { BackHeader } from "@components/BackHeader";
-import React, { useState } from "react";
+import { InputLabel } from "@components/InputLabel";
+import { Input } from "@components/Input";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
+import { Button } from "@components/Button";
+import { useState } from "react";
 import theme from "@theme/index";
-import uuid from "react-native-uuid";
-import { MealCreateProps, mealCreate } from "@storage/meal/mealCreate";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { mealsEdit } from "@storage/meal/mealsEdit";
 
-export function NewMeal() {
-  const [name, setName] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [date, setDate] = useState<string>("");
-  const [hours, setHours] = useState<string>("");
-  const [isDiet, setIsDiet] = useState<boolean>(true);
+type RouteParams = {
+  id: string;
+  name: string;
+  description: string;
+  date: string;
+  hours: string;
+  isDiet: boolean;
+};
+
+export function Edit() {
+  const [tempName, setTempName] = useState<string>("");
+  const [tempDescription, setTempDescription] = useState<string>("");
+  const [tempDate, setTempDate] = useState<string>("");
+  const [tempHours, setTempHours] = useState<string>("");
+  const [tempIsDiet, setTempIsDiet] = useState<boolean>(true);
+
+  const navigation = useNavigation();
+  const routes = useRoute();
+
+  const { id, date, description, hours, isDiet, name } =
+    routes.params as RouteParams;
 
   const [btnYes, setBtnYes] = useState<boolean>(true);
   const [btnNo, setBtnNo] = useState<boolean>(false);
 
-  const navigation = useNavigation();
+  async function handleEditMeal() {
+    console.log(tempIsDiet);
+    try {
+      const result = await mealsEdit({
+        id,
+        name: tempName || name,
+        description: tempDescription || description,
+        date: tempDate || date,
+        hours: tempHours || hours,
+        isDiet: tempIsDiet,
+      });
+    } catch (error) {
+      console.log("Edit Error: " + error);
+    } finally {
+      navigation.navigate("home");
+    }
+  }
 
   function handleHours(hour: Date) {
     const hours = hour
@@ -39,14 +69,14 @@ export function NewMeal() {
         year: "numeric",
       })
       .split(" ")[1];
-    setHours(hours);
+    setTempHours(hours);
   }
 
   function handleDate(date: Date): void {
     const day = date.getDate();
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
-    setDate(`${day}/${month}/${year}`);
+    setTempDate(`${day}/${month}/${year}`);
   }
 
   function handleToggleButton() {
@@ -54,41 +84,16 @@ export function NewMeal() {
     setBtnYes((current) => !current);
   }
 
-  async function handleNewMeal() {
-    try {
-      if (name === "" || description === "" || date === "" || hours === "") {
-        return Alert.alert("Nova refeição", "Preencha todos os campos");
-      }
-
-      const id = String(uuid.v4());
-
-      const meal: MealCreateProps = {
-        date,
-        id,
-        name,
-        description,
-        hours,
-        isDiet,
-      };
-
-      await mealCreate(meal);
-      navigation.navigate("result", { isDiet });
-    } catch (error) {
-      Alert.alert("Nova refeição", "Nao foi possível realizar o cadastro");
-      console.log(error);
-    }
-  }
-
   return (
     <Container>
-      <BackHeader title={"Nova refeição"} color="GREY" />
+      <BackHeader color="GREY" title={"Editar Refeição"} />
       <Content>
         <InputLabel label={"Nome"} />
         <Input
           width={"327"}
           height={"48"}
           defaultValue={name}
-          onChangeText={(text) => setName(text)}
+          onChangeText={(text) => setTempName(text)}
         />
         <InputLabel label={"Descrição"} />
         <Input
@@ -96,7 +101,7 @@ export function NewMeal() {
           width={"327"}
           height={"120"}
           defaultValue={description}
-          onChangeText={(text) => setDescription(text)}
+          onChangeText={(text) => setTempDescription(text)}
         />
 
         <View style={{ flexDirection: "row" }}>
@@ -118,7 +123,7 @@ export function NewMeal() {
             keyboardType="numeric"
             width={"153"}
             height={"48"}
-            defaultValue={date}
+            defaultValue={tempDate || date}
             onPress={() => {
               DateTimePickerAndroid.open({
                 testID: "dateTimePicker",
@@ -133,8 +138,8 @@ export function NewMeal() {
             keyboardType="numeric"
             width={"153"}
             height={"48"}
-            defaultValue={hours}
-            onChangeText={() => console.log("oi")}
+            defaultValue={tempHours || hours}
+            onChangeText={(text) => setTempHours(text)}
             onPress={() => {
               DateTimePickerAndroid.open({
                 testID: "dateTimePicker",
@@ -153,7 +158,7 @@ export function NewMeal() {
           <StatusBox
             onPress={() => {
               handleToggleButton();
-              setIsDiet(true);
+              setTempIsDiet(true);
             }}
             style={
               btnYes && !btnNo
@@ -175,7 +180,7 @@ export function NewMeal() {
           <StatusBox
             onPress={() => {
               handleToggleButton();
-              setIsDiet(false);
+              setTempIsDiet(false);
             }}
             style={
               btnNo && !btnYes
@@ -198,9 +203,9 @@ export function NewMeal() {
         <View style={{ paddingTop: 180 }}>
           <Button
             btnColor="BLACK"
-            icon="EDIT"
-            title="Cadastrar Refeição"
-            onPress={() => handleNewMeal()}
+            icon="NONE"
+            title="Salvar alterações"
+            onPress={() => handleEditMeal()}
             haveIcon={false}
             btnWidth={327}
             btnHeight={48}
@@ -209,4 +214,14 @@ export function NewMeal() {
       </Content>
     </Container>
   );
+}
+function mealsEditById(
+  id: string,
+  name: string,
+  description: string,
+  date: string,
+  hours: string,
+  isDiet: boolean
+) {
+  throw new Error("Function not implemented.");
 }

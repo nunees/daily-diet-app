@@ -29,8 +29,8 @@ export function ModalContent({
             icon={"NONE"}
             title={btnCancelText}
             onPress={onCancelPress}
-            btnWidth={"135"}
-            btnHeight={"50"}
+            btnWidth={135}
+            btnHeight={50}
           />
           <Button
             btnColor={"BLACK"}
@@ -38,8 +38,8 @@ export function ModalContent({
             icon={"NONE"}
             title={btnConfirmText}
             onPress={onConfirmPress}
-            btnWidth={"135"}
-            btnHeight={"50"}
+            btnWidth={135}
+            btnHeight={50}
           />
         </View>
       </Content>

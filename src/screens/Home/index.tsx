@@ -2,23 +2,27 @@ import { Container, Title } from "./styles";
 import { Header } from "@components/Header";
 import { QuickStats } from "@components/QuickStats";
 import { Meals } from "@components/Meals";
-import {
-  useFocusEffect,
-  useNavigation,
-  useRoute,
-} from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useCallback, useState } from "react";
 import { Button } from "@components/Button";
 import { View } from "react-native";
 import { mealsGetAll } from "@storage/meal/mealsGetAll";
-import { IMealsHistory } from "@components/DayList";
-import { getMealsByDate } from "@storage/meal/getMealsByDate";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import { MealsEditProps } from "@storage/meal/mealsEdit";
+import { IMeals } from "@components/DayList";
 import { MealCreateProps } from "@storage/meal/mealCreate";
+
+type IMeal = {
+  id: string;
+  name: string;
+  description: string;
+  date: string;
+  hours: string;
+  isDiet: boolean;
+};
 
 export function Home() {
   const [percentInDiet, setPercentInDiet] = useState<number>(0);
-  const [meals, setMeals] = useState<IMealsHistory[]>([]);
+  const [meals, setMeals] = useState<IMeals[]>([]);
 
   const navigation = useNavigation();
 
@@ -36,13 +40,21 @@ export function Home() {
     navigation.navigate("newmeal");
   }
 
-  function getPercentInDiet() {
-    const mealsInDiet = meals.reduce((acc: number, meal: any) => {
-      meal.isDiet ? (acc += 1) : (acc += 0);
-      return acc;
-    }, 0);
-    const percent = (mealsInDiet / meals.length) * 100;
-    setPercentInDiet(percent);
+  // function getPercentInDiet() {
+  //   const mealsInDiet = meals.reduce((acc: number, meal) => {
+  //     meal ? (acc += 1) : (acc += 0);
+  //     return acc;
+  //   }, 0);
+  //   const percent = (mealsInDiet / meals.length) * 100;
+  //   setPercentInDiet(percent);
+  // }
+
+  function getPercentInDiet(arr: IMeal[]) {
+    if (arr.length > 0) {
+      const mealsInDiet = arr.filter((meal) => meal.isDiet === true);
+      const calPercent = (mealsInDiet.length / arr.length) * 100;
+      setPercentInDiet(calPercent);
+    }
   }
 
   function getTotalMealsInDiet() {
@@ -63,23 +75,13 @@ export function Home() {
 
   async function getAllMeals() {
     const meals = await mealsGetAll();
+    getPercentInDiet(meals);
     setMeals(meals);
   }
 
-  function getTotalMealsInDietSequence(meals: IMealsHistory[]) {
+  function getTotalMealsInDietSequence(meals: IMeals[]) {
     let maxSequence = 0;
     let currentSequence = 0;
-
-    // for (let i = 0; i < meals.length; i++) {
-    //   const currentItem = meals[i];
-
-    //   if (currentItem.isDiet) {
-    //     currentSequence++;
-    //     maxSequence = Math.max(maxSequence, currentSequence);
-    //   } else {
-    //     currentSequence = 0;
-    //   }
-    // }
 
     for (let i = 0; i < meals.length; i++) {
       const date = meals[i].date;
@@ -100,7 +102,6 @@ export function Home() {
 
   useFocusEffect(
     useCallback(() => {
-      getPercentInDiet();
       getAllMeals();
     }, [])
   );
